@@ -133,7 +133,7 @@ Result: Every pitch set has the exact same average while maintaining randomness 
 
 ## License
 
-[Add your license here]
+MIT License - see [LICENSE](LICENSE) file for details
 
 ## Author
 
