@@ -1,3 +1,5 @@
+<img width="502" height="274" alt="image" src="https://github.com/user-attachments/assets/821e60db-267a-4eed-9ac7-2d165b8820ed" />
+
 # Averager
 
 A Max for Live MIDI device that generates random pitch sets whose average matches a target pitch, for computer-aided composition or live set ups. The device is inspired by the cognitive phenomenon that humans are remarkably accurate at identifying the average pitch within a series of random pitches.
