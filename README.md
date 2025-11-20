@@ -137,8 +137,5 @@ MIT License - see [LICENSE](LICENSE) file for details
 
 ## Author
 
-[Add your information here]
-
-## Acknowledgments
-
-Built with Max/MSP and Max for Live.
+Gur Shafriri   
+shafriri.gur@gmail.com
