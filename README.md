@@ -1,16 +1,17 @@
 
 <p align="center">
-  <img width="502" height="274" alt="The averager max for live device" src="https://github.com/user-attachments/assets/821e60db-267a-4eed-9ac7-2d165b8820ed" />
+  <img width="502" height="274" alt="The averager max for live device" src="https://github.com/user-attachments/assets/821e60db-267a-4eed-9ac7-2d165b8820ed" style="border-radius: 10px;" />
 </p>
+
 # Averager
 
 A Max for Live MIDI device that generates random pitch sets whose average matches a target pitch, for computer-aided composition or live set ups. The device is inspired by the cognitive phenomenon that humans are remarkably accurate at identifying the average pitch within a series of random pitches.
 
 ## Features
 
-### Core Functionality
-- **Pitch Averaging**: Generates random pitch sets that average to a specific target pitch (MIDI note number)
-- **Real-time MIDI Output**: Outputs generated pitches as MIDI notes for use in Ableton Live
+**Pitch Averaging**: Generates random pitch sets that average to a specific target pitch (MIDI note number)  
+
+**Real-time MIDI Output**: Outputs generated pitches in defined order and pace as MIDI notes for use in Ableton Live
 
 ### Controls
 
@@ -28,29 +29,11 @@ A Max for Live MIDI device that generates random pitch sets whose average matche
    - **Custom Function**: Use a tempo envelope curve for dynamic timing
    - **Function Editor**: Draw custom BPM curves over the duration of the note sequence
 
-### Technical Architecture
-
-The main logic resides in the `p creation` subpatcher, which:
-1. Generates a balanced list of pitches that average to the input pitch
-2. Outputs them one by one based on timing parameters
-3. Uses real-time interpolation through the BPM function curve for accurate temporal control
-
-## Installation
-
-### As Max for Live Device (.amxd)
-1. Download `averager.amxd`
-2. Place it in your Ableton Live User Library
-3. Drag onto a MIDI track in Ableton Live
-
-### As Standalone Max Patch (.maxpat)
-1. Download `averager.maxpat`
-2. Open in Max/MSP (requires Max 8 or later)
-3. Can be used independently or modified for your own needs
-
 ## Usage
 
-### Basic Workflow
-1. Add Averager to a MIDI track in Ableton Live
+### Quickstart
+
+1. Download and add `averager.amxd` to a MIDI track in Ableton Live
 2. Set your target average pitch (incoming MIDI note or parameter)
 3. Adjust Amount and Range to control the pitch set characteristics
 4. Choose playback direction and origin mode
@@ -64,20 +47,70 @@ The function editor allows you to create dynamic tempo envelopes:
 - The device interpolates linearly between breakpoints
 - Real-time calculation ensures accurate timing through variable BPM changes
 
+### Using as Standalone Max Patch (.maxpat)
+1. Download `averager.maxpat`
+3. Drag onto a MIDI track in Ableton Live
+2. Open in Max/MSP (requires Max 8 or later)
+3. Can be used independently or modified for your own needs
+
+
+
 ## Technical Details
 
+### Technical Architecture
+
+The device processes MIDI input through five main stages:
+
+```mermaid
+graph LR
+    A[MIDI Input<br/>midiin] --> B[Controls<br/>Amount, Range<br/>Direction, Origin]
+    A --> C[p creation<br/>Pitch Generator]
+    B --> C
+    B --> D[Timing Engine<br/>BPM/Function Curve]
+    C --> E[Output Sequencer<br/>Sort & Send]
+    D --> E
+    E --> F[MIDI Output<br/>midiout]
+    
+    style C fill:#90EE90
+    style D fill:#FFB6C1
+    style E fill:#87CEEB
+```
+
+#### How It Works
+
+**1. Pitch Generation (`p creation`)**
+- Generates random pitch offsets within specified range
+- Calculates their average and adjusts all pitches to match the target note
+- Result: A balanced set that averages exactly to the input MIDI note
+
+**2. Timing Engine**
+- Fixed mode: 2000ms or 500ms intervals
+- Function mode: Interpolates custom BPM curve at 1000x resolution for smooth tempo changes
+
+**3. Output Sequencer**
+- Sorts pitches by direction (Random/Up/Down)
+- Sends notes one-by-one using `metro` and `zl.queue`
+- Optionally plays origin note first
+
+
 ### Pitch Generation Algorithm
-The device generates pitches by:
-1. Creating random offsets from the target average
-2. Ensuring the set balances around the average (sum of deviations = 0)
-3. Constraining pitches within the specified range
-4. Optional inclusion of the origin pitch (exact average)
+
+The algorithm generates a pitch set that mathematically averages to the target note:
+
+1. **Generate**: Create N random pitches within ±Range semitones
+2. **Calculate**: Find the average of the random set
+3. **Adjust**: Shift all pitches by the difference to match target average
+
+Result: Every pitch set has the exact same average while maintaining randomness and spread.
 
 ### Timing Engine
-The BPM function curve is processed in real-time using:
-- Logarithmic mean calculation for linear BPM interpolation segments
-- High-resolution sampling (1000x grain) for millisecond accuracy
-- Self-regulating feedback loop that adapts timing based on the function curve
+
+**Fixed BPM**: Choose 2000ms (30 BPM) or 500ms (120 BPM) intervals
+
+**Function Curve**: Draw a tempo envelope that changes over the sequence
+- Samples curve at 1000x resolution for smooth tempo changes
+- Uses harmonic mean to ensure accurate timing perception
+- Supports 30-500 BPM range
 
 ## Requirements
 
