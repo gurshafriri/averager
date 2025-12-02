@@ -7,6 +7,8 @@
 
 A Max for Live MIDI device that generates random pitch sets whose average matches a target pitch, for computer-aided composition or live set ups. The device is inspired by the cognitive phenomenon that humans are remarkably accurate at identifying the average pitch within a series of random pitches.
 
+**Listen and view the score of [Mobile](https://field.gurworks.com/#project/mobile)**, a piece for a mixed ensemble entirely balanced on one average pitch, written with the help of this tool 
+
 ## Features
 
 **Pitch Averaging**: Generates random pitch sets that average to a specific target pitch (MIDI note number)  
